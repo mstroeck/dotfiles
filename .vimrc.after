@@ -1,0 +1,257 @@
+" Forget compatibility with Vi
+set nocompatible
+
+" Enable filetypes
+filetype on
+filetype plugin on
+filetype indent on
+
+set go+=db
+
+" Remember last location in file
+if has("autocmd")
+    au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+                \| exe "normal g'\"" | endif
+endif
+
+" Enable mouse interaction if the terminal supports it
+set mouse=a
+
+" Sane movement
+nmap j gj
+nmap k gk
+
+" Remove any trailing whitespace that is in the file on save
+autocmd BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
+
+" Set a shortcut for toggling Tagbar
+nnoremap <leader>tb :TagbarToggle<CR>
+
+" Use git grep for search
+nnoremap <Leader>gg :GitGrep<Space>
+
+" Change to directory of currently open file
+nnoremap <Leader>cd :cd %:p:h<CR>
+
+set nowrap
+set textwidth=0
+let g:leave_my_textwidth_alone=1
+
+" Write the old file out when switching between files.
+set autowrite
+
+" Display current cursor position in lower right corner.
+set ruler
+
+" Ever notice a slight lag after typing the leader key + command? This lowers the timeout.
+set timeoutlen=500
+
+" Switch between buffers without saving
+set hidden
+
+" NERDTree settings
+let NERDTreeShowBookmarks=1
+let autochdir=0
+let NERDTreeChDirMode=2
+autocmd VimEnter * NERDTree
+
+" allow the . to execute once for each line of a visual selection
+vnoremap . :normal .<CR>
+
+" Sane tabstop settings
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+
+" Set key to temporarily switch into paste mode
+set pastetoggle=<F2>
+
+" Show command in bottom right portion of the screen
+set showcmd
+
+" Show line numbers
+set number
+
+" Indent stuff
+set smartindent
+set autoindent
+
+" Always show the status line
+set laststatus=2
+
+"Prefer a slightly higher line height
+set linespace=3
+
+" Mapping for Gundo
+nnoremap <Leader>u :GundoToggle<CR>
+
+" Set incremental searching"
+set incsearch
+
+" Highlight searching
+set hlsearch
+
+" case insensitive search
+set ignorecase
+set smartcase
+
+" Hard-wrap paragraphs of text
+nnoremap <leader>q gqip
+
+" Convenient mapping for opening and closing tabs
+map <leader>tn :tabnew<CR>
+map <leader>tc :tabclose<CR>
+
+" Open current window in its own tab
+nnoremap <Leader>te :tabedit %<CR>
+
+" Enable code folding
+set foldenable
+
+" Hide mouse when typing
+set mousehide
+
+" Look upwards in directories for tags file
+set tags=tags;
+
+" Open tag definitions in a new tab
+nnoremap <leader>jt :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+
+" Shortcut to fold tags with leader (usually \) + ft
+nnoremap <leader>ft Vatzf
+
+" Opens a vertical split and switches over (\v)
+nnoremap <leader>v <C-w>v<C-w>l
+
+" Split windows below the current window.
+set splitbelow
+
+" Session settings
+set sessionoptions=resize,winpos,winsize,buffers,tabpages,folds,curdir,help
+
+" Load the current buffer in the standard browser - Mac specific.
+abbrev gc :! open %:p<cr>
+
+" Map a change directory to the desktop - Mac specific
+nmap ,d :cd ~/Desktop<cr>:e.<cr>
+
+" Shortcut for editing  vimrc file in a new tab
+nmap ,ev :tabedit $MYVIMRC<cr>
+
+" Faster shortcut for commenting. Requires T-Comment plugin
+map ,c <c-_><c-_>
+
+" Map code completion to , + tab
+imap ,<tab> <C-x><C-o>
+
+" Don't move around in insert mode
+inoremap <up> <nop>
+inoremap <down> <nop>
+inoremap <left> <nop>
+inoremap <right> <nop>
+
+" The smash escape
+imap jk <esc>
+imap kj <esc>
+
+" Delete all buffers
+nmap <silent> ,da :exec "1," . bufnr('$') . "bd"<cr>
+
+" Bubble single lines
+nmap <C-Up> ddkP
+nmap <C-Down> ddp
+
+" Emacs-style movement keys in the command line
+cnoremap <C-a>  <Home>
+cnoremap <C-b>  <Left>
+cnoremap <C-f>  <Right>
+cnoremap <C-d>  <Delete>
+cnoremap <M-b>  <S-Left>
+cnoremap <M-f>  <S-Right>
+cnoremap <M-d>  <S-right><Delete>
+cnoremap <Esc>b <S-Left>
+cnoremap <Esc>f <S-Right>
+cnoremap <Esc>d <S-right><Delete>
+cnoremap <C-g>  <C-c>
+
+" Bubble multiple lines
+vmap <C-Up> xkP`[V`]
+vmap <C-Down> xp`[V`]
+
+" Source the vimrc file after saving it. This way, you don't have to reload
+" Vim to see the changes.
+if has("autocmd")
+    autocmd bufwritepost .vimrc.after source $MYVIMRC
+endif
+
+" easier window navigation
+nmap <C-h> <C-w>h
+nmap <C-j> <C-w>j
+nmap <C-k> <C-w>k
+nmap <C-l> <C-w>l
+
+" Show hidden files in NerdTree
+let NERDTreeShowHidden=1
+
+" Colors and fonts
+syntax enable
+set guifont=Inconsolata-dz-Powerline:h14
+let g:solarized_termcolors=256
+set t_Co=256
+set background=dark
+colorscheme solarized
+
+" load the plugin and indent settings for the detected filetype
+filetype plugin indent on
+
+function s:setupWrapping()
+    set wrap
+    set wrapmargin=2
+    set textwidth=72
+endfunction
+
+function s:setupMarkup()
+    call s:setupWrapping()
+    map <buffer> <Leader>p :Hammer<CR>
+endfunction
+
+" make uses real tabs
+au FileType make set noexpandtab
+
+" make Python follow PEP8 ( http://www.python.org/dev/peps/pep-0008/ )
+au FileType python set softtabstop=4 tabstop=4 shiftwidth=4 textwidth=79
+
+" md, markdown, and mk are markdown and define buffer-local preview
+au BufRead,BufNewFile *.{md,markdown,mdown,mkd,mkdn} call s:setupMarkup()
+
+" shortcut for formatting JSON strings
+nnoremap <Leader>js :%!python -m json.tool<CR>
+
+" add json syntax highlighting
+au BufNewFile,BufRead *.json set ft=javascript
+
+" A fancy status bar
+let g:Powerline_symbols = 'fancy'
+
+" Mac OS X specific: Use Dash.app for documentation lookup
+nmap <silent> <leader>d <Plug>DashSearch
+
+" gist-vim defaults
+if has("mac")
+    let g:gist_clip_command = 'pbcopy'
+elseif has("unix")
+    let g:gist_clip_command = 'xclip -selection clipboard'
+endif
+let g:gist_detect_filetype = 1
+let g:gist_open_browser_after_post = 1
+
+" Show more files in CTRL-P
+let g:ctrlp_max_height = 30
+let g:ctrlp_max_files = 75000
+let g:ctrlp_max_depth = 100
+let g:ctrlp_match_window_bottom = 0
+let g:ctrlp_match_window_reversed = 0
+let g:ctrlp_working_path_mode = 0
+let g:ctrlp_dotfiles = 0
+let g:ctrlp_switch_buffer = 0
