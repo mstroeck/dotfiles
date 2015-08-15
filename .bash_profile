@@ -121,3 +121,5 @@ cd ~/Development
 
 # alias to quickly git amend with author info
 alias gitautms='git commit --amend --no-edit --author="Michael G. Ströck <michael@stroeck.com>"'
+
+source /Users/mstroeck/.iterm2_shell_integration.bash
