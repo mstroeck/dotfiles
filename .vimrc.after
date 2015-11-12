@@ -15,7 +15,11 @@ if has("autocmd")
 endif
 
 " Enable mouse interaction if the terminal supports it
-set mouse=a
+set mouse+=a
+if &term =~ '^screen'
+    " tmux knows the extended mouse mode
+    set ttymouse=xterm2
+endif
 
 " Sane movement
 nmap j gj
