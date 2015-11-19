@@ -103,6 +103,9 @@ set smartcase
 " Hard-wrap paragraphs of text
 nnoremap <leader>q gqip
 
+" Sort words in a line
+nnoremap <leader>,sl :call setline('.',join(sort(split(substitute(getline('.'), ',', '', 'g'))), ', '))
+
 " Convenient mapping for opening and closing tabs
 map <leader>tn :tabnew<CR>
 map <leader>tc :tabclose<CR>
